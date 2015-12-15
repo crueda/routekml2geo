@@ -12,25 +12,41 @@ import sys
 import utm
 import logging, logging.handlers
 
-
-# obtenemos la hora actual
-now_time = datetime.datetime.now()
-
 # establecemos el formato segun el formato de los logs
 format = "%H:%M:%S"
 
+# obtenemos la hora actual
+now_time = datetime.datetime.now()
 now = now_time.strftime(format)
+#print (now , ' -> routekml2geo - START')
 
-print (now , ' -> routekml2geo - START')
-
+queryHeader = "INSERT INTO routes (SHAPE) VALUES ( GeomFromText( \' LineString("
+queryFooter = ") \' ) )"
+queryBody = ""
 
 with open('./rutas.txt') as fp:
 	for line in fp:
-		print line
+
+		vline = line.split(" ")
+
+		for element in vline:
+			vcoord = element.split(",")
+			lat = float(vcoord[1])
+			lon = float(vcoord[0])
+
+			#u = utm.from_latlon(41.3, 0.12)
+			point_utm = utm.from_latlon(lat, lon)
+			queryBody = queryBody + str(point_utm[0]) + "," + str(point_utm[1]) + " "
+			#print queryBody
+			
+
+		query = queryHeader + queryBody + queryFooter + ";"
+		print query
+
+		#print line
 
 
 # obtenemos la hora actual
-now_time = datetime.now()
-format = "%H:%M:%S"
+now_time = datetime.datetime.now()
 now = now_time.strftime(format)
-print (now , ' -> routekml2geo - FINISH')
+#print (now , ' -> routekml2geo - END')
