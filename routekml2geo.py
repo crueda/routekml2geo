@@ -24,19 +24,23 @@ queryHeader = "INSERT INTO routes (SHAPE) VALUES ( GeomFromText( \' LineString("
 queryFooter = ") \' ) )"
 queryBody = ""
 
-with open('./rutas.txt') as fp:
+with open('./rutas0.txt') as fp:
 	for line in fp:
 
 		vline = line.split(" ")
-
+		nelement = 0
 		for element in vline:
+			nelement += 1
 			vcoord = element.split(",")
 			lat = float(vcoord[1])
 			lon = float(vcoord[0])
 
 			#u = utm.from_latlon(41.3, 0.12)
 			point_utm = utm.from_latlon(lat, lon)
-			queryBody = queryBody + str(point_utm[0]) + "," + str(point_utm[1]) + " "
+			if (nelement==1):
+				queryBody = queryBody + str(point_utm[0]) + " " + str(point_utm[1])
+			else:
+				queryBody = queryBody + "," + str(point_utm[0]) + " " + str(point_utm[1])
 			#print queryBody
 			
 
